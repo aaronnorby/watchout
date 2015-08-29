@@ -28,15 +28,16 @@ var svg = body.append('svg')
   .attr('height', height)
   .attr('width', width);
 
-svg.selectAll('circle')
-  .data(obstacles, function(d) {return d.id})
-  .enter()
-  .append('circle')
-  .attr('r', function(d) {return d.radius})
-  .attr('cx', function(d) {return d.x})
-  .attr('cy', function(d) {return d.y})
-  .attr('fill', 'red')
-  .attr('class', 'obstacle');
+// svg.selectAll('image')
+//   .data(obstacles, function(d) {return d.id})
+//   .enter()
+//   .append('image')
+//   .attr('height', 60)
+//   .attr('width', 60)
+//   .attr('xlink:href', function(d) {return d.sprite;})
+//   .attr("y", function(d) {return d.y})
+//   .attr("x", function(d) {return d.x})
+//   .attr('class', 'obstacle');
 
 
 
@@ -115,7 +116,7 @@ function tickFn() {
     return obs.y > 0 && (obs.x > 0 - width && obs.x < width*2);
   });
 
-  while (obstacles.length < 20) {
+  while (obstacles.length < 12) {
     obstacles.push(generateObstacle());
   }
 
@@ -141,7 +142,7 @@ function tickFn() {
   //console.log(closest);
   //console.log("dist: " + distance(player.x, player.y, closest.x, closest.y));
   
-  if (closest !== undefined && distance(player.x, player.y, closest.x, closest.y) < 35 &&
+  if (closest !== undefined && distance(player.x, player.y, closest.x, closest.y) < 25 &&
     !(player.collisions[closest.id])) {
     
       player.collisions[closest.id] = true;
@@ -180,23 +181,26 @@ function tickFn() {
       }
     })
     .attr('transform', function(d) {
-      if (d.xDeflect > 0) {
-        return "scale(-1, 1)";
+      if (d.xDeflect < 0) {
+        return "scale(1 1) translate(-50 -50)";
       }
-      return "scale(1,1)";
+      return "scale(-1 1) translate(" + (-width - 50) + " -50)";
     });
 
   var obs = svg.selectAll('.obstacle')
     .data(obstacles, function(d) {return d.id})
-    .attr("cy", function(d) {return d.y})
-    .attr("cx", function(d) {return d.x});
+    .attr("y", function(d) {return d.y})
+    .attr("x", function(d) {return d.x});
 
+    //debugger;
   obs.enter()
-    .append('circle')
-    .attr('r', function(d) {return d.radius})
-    .attr('cx', function(d) {return d.x})
-    .attr('cy', function(d) {return d.y})
-    .attr('fill', 'red')
+    .append('image')
+    .attr('xlink:href', function(d) {return d.sprite;})
+    .attr('height', 60)
+    .attr('width', 60)
+    .attr("y", function(d) {return d.y})
+    .attr("x", function(d) {return d.x})
+    .attr('transform', 'translate(-30 -30)')
     .attr('class', 'obstacle');
 
   obs.exit()

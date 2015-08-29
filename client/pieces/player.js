@@ -7,10 +7,18 @@ var Player = function(x,y, radius) {
 Player.prototype = Object.create(Piece.prototype);
 Player.prototype.constructor = Player;
 
-Player.prototype.moveLeft = _.throttle(function(){
+Player.prototype.moveLeft = function(){
   this.xDeflect = Math.min(this.xDeflect + 1, 7);
-}, 35);
+};
 
-Player.prototype.moveRight = _.throttle(function() {
+/*_.throttle(function(){
+  this.xDeflect = Math.min(this.xDeflect + 1, 7);
+}, 35);*/
+
+Player.prototype.moveRight = function() {
   this.xDeflect = Math.max(this.xDeflect - 1, 0-7);
-}, 35);
+};
+
+/*_.throttle(function() {
+  this.xDeflect = Math.max(this.xDeflect - 1, 0-7);
+}, 35);*/

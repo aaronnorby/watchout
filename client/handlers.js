@@ -1,19 +1,22 @@
 var keydownHandler = function(d, i) {
   if (d3.event.keyCode === 65 && lastKey !== 65) {
     lastKey = 65;
-    moveKeyIntervalIDs["65"] = setInterval(function(){player.moveLeft();}, 10);
+    if (!moveKeyIntervalIDs["65"]) {
+      moveKeyIntervalIDs["65"] = setInterval(function(){player.moveLeft();}, 22);  
+    }
     
   } else if (d3.event.keyCode === 68 && lastKey !== 68) {
     lastKey = 68;
-    moveKeyIntervalIDs["68"] = setInterval(function(){player.moveRight();}, 10);
-    
+    if (!moveKeyIntervalIDs["68"]) {
+      moveKeyIntervalIDs["68"] = setInterval(function(){player.moveRight();}, 22);
+    }
   }
 };
 
 var keyUpHandler = function(d, i) {
   var key = d3.event.keyCode;
   if ((key === 65) || (key === 68)) {
-    // lastKey = undefined;
+    lastKey = null;
     clearTimeout(moveKeyIntervalIDs[key]); 
     moveKeyIntervalIDs[key] = null;
   }
