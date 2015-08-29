@@ -6,13 +6,13 @@ var Obstacle = function(x,y, radius){
 
 Obstacle.prototype = Object.create(Piece.prototype);
 Obstacle.prototype.constructor = Obstacle;
-Obstacle.prototype.move = function() {
+Obstacle.prototype.move = function(playerDeltaX) {
   this.y = this.y - this.yDelta;
-  this.x = this.x + this.xDeflect || 0
+  this.x = this.x + this.xDeflect + playerDeltaX || 0;
 };
 
 var generateObstacle = function() {
-  var x = Math.random() * width;
+  var x = Math.random() * width*2;
   var y = 620;
   var radius = 20;
   var obstacle = new Obstacle(x, y, radius);

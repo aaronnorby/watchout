@@ -6,11 +6,16 @@ var collisions = 0;
 
 var objCount = 0;
 
-var height = 640;
-var width = 480;
+var height = 363;
+var width = 500;
 
 var obstacles = [];
+var waves = [];
 var player = new Player(240,200,15);
+
+for (var i = -1; i < 3; i++) {
+  waves.push(new Wave(i*250));
+}
 
 for (var i = 0; i < 3; i++) {
   obstacles.push(generateObstacle());
@@ -33,17 +38,13 @@ svg.selectAll('circle')
   .attr('fill', 'red')
   .attr('class', 'obstacle');
 
-svg.selectAll('.player')
-  .data([player])
-  .enter()
-  .append('circle')
-  .attr('r', function(d) {return d.radius})
-  .attr('cx', function(d) {return d.x})
-  .attr('cy', function(d) {return d.y})
-  .attr('fill', 'blue')
-  .attr('class', 'player');
 
-var moveKeyIntervalID;
+
+var moveKeyIntervalIDs = {
+  "65": null,
+  "68": null
+};
+var lastKey;
 
 body.on('keydown', keydownHandler);
 
@@ -54,9 +55,12 @@ d3.timer(tickFn);
 var quad = d3.geom.quadtree();
   quad.x(function(d) {return d.x;});
   quad.y(function(d) {return d.y;});
-  quad.extent([[-1,-1],[width + 1, height + 1]]);
+  quad.extent([[0-width, -1],[width + width, height + 1]]);
 
 
+
+// This is the function that does everything 
+////////////////////////////////////////////
 function tickFn() {
   if (currentScore > highScore) {
     highScore = currentScore;
@@ -77,11 +81,41 @@ function tickFn() {
     });
   //debugger;
 
-  obstacles = obstacles.filter(function(obs) {
-    return obs.y > 0 && (obs.x > 0 && obs.x < width);
+  // Paint background 
+
+  waves.forEach(function(wave) {
+    wave.move(player.xDeflect);
   });
 
-  while (obstacles.length < 5) {
+  if (waves[3].x > width + 250) {
+    waves.pop();
+    waves.unshift(new Wave(waves[0].x - 250));
+  }
+
+  if (waves[0].x < 0 - 250) {
+    waves.shift();
+    waves.push(new Wave(waves[2].x + 250));
+  }
+
+  svg.selectAll('image')
+    .data(waves)
+    .enter()
+    .append('image')
+    .attr('xlink:href', './img/waves.png')
+    .attr('height', 363)
+    .attr('width', 255)
+    .attr('y', 0);
+
+  svg.selectAll('image')
+    .data(waves)
+    .attr('x', function(d) {return d.x;});  
+
+
+  obstacles = obstacles.filter(function(obs) {
+    return obs.y > 0 && (obs.x > 0 - width && obs.x < width*2);
+  });
+
+  while (obstacles.length < 20) {
     obstacles.push(generateObstacle());
   }
 
@@ -94,12 +128,12 @@ function tickFn() {
   });
   console.log(nodeCount);*/
 
-  svg.selectAll('.player')
-      .data([player])
-      .attr("cx", function(d) {return d.x});
+  // svg.selectAll('.player')
+  //     .data([player])
+  //     .attr("cx", function(d) {return d.x});
 
   obstacles.forEach(function(obstacle) {
-    obstacle.move();
+    obstacle.move(player.xDeflect);
   });
   //debugger;
   var closest = root.find([player.x, player.y]);
@@ -115,6 +149,42 @@ function tickFn() {
       collisionHandler();
       console.log("Collision!");
   }
+
+  svg.selectAll('.player')
+  .data([player])
+  .enter()
+  .append('image')
+  .attr('height', 100)
+  .attr('width', 100)
+  .attr('x', width / 2)
+  .attr('y', height / 2)
+  .attr('class', 'player');
+
+  svg.selectAll('.player')
+    .data([player])
+    .attr('xlink:href', function(d) {
+    var path = "./img/Surfer/surfer_solo_";
+    var pathEnd = ".gif";
+    var deflect = Math.abs(d.xDeflect);
+      if (deflect < 1.75) {
+        return path + 1 + pathEnd;
+      }
+      if (deflect < 3.5) {
+        return path + 2 + pathEnd;
+      }
+      if (deflect < 5.25) {
+        return path + 3 + pathEnd;
+      }
+      if (deflect <= 7) {
+        return path + 4 + pathEnd;
+      }
+    })
+    .attr('transform', function(d) {
+      if (d.xDeflect > 0) {
+        return "scale(-1, 1)";
+      }
+      return "scale(1,1)";
+    });
 
   var obs = svg.selectAll('.obstacle')
     .data(obstacles, function(d) {return d.id})
