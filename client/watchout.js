@@ -113,7 +113,7 @@ function tickFn() {
 
 
   obstacles = obstacles.filter(function(obs) {
-    return obs.y > 0 && (obs.x > 0 - width && obs.x < width*2);
+    return obs.y > 85 && (obs.x > 0 - width && obs.x < width*2);
   });
 
   while (obstacles.length < 12) {
