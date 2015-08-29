@@ -54,7 +54,8 @@ d3.timer(tickFn);
 var quad = d3.geom.quadtree();
   quad.x(function(d) {return d.x;});
   quad.y(function(d) {return d.y;});
-  quad.extent([[0,0],[width, height]]);
+  quad.extent([[-1,-1],[width + 1, height + 1]]);
+
 
 function tickFn() {
   if (currentScore > highScore) {
@@ -77,15 +78,21 @@ function tickFn() {
   //debugger;
 
   obstacles = obstacles.filter(function(obs) {
-    return obs.y > 0;
+    return obs.y > 0 && (obs.x > 0 && obs.x < width);
   });
+
+  while (obstacles.length < 5) {
+    obstacles.push(generateObstacle());
+  }
 
   // var root = quad([player].concat(obstacles));
   var root = quad(obstacles);
 
-  /*root.visit(function(node) {
-    console.log(node);
-  })*/
+ /* var nodeCount = 0;
+  root.visit(function(node) {
+    nodeCount++;
+  });
+  console.log(nodeCount);*/
 
   svg.selectAll('.player')
       .data([player])
