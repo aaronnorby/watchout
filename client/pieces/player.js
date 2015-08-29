@@ -1,5 +1,6 @@
 var Player = function(x,y, radius) {
-  Piece.apply(this, arguments);  
+  Piece.apply(this, arguments); 
+  this.collisions = {}; 
 };
 
 Player.prototype = Object.create(Piece.prototype);
