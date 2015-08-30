@@ -3,3 +3,17 @@
 /* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
 
+.body {
+  position: relative;
+}
+
+.scoreboard {
+  font-family: "Press Start 2p", sans-serif;
+  font-size: 10pt;
+  position: absolute;
+  padding: 5px;
+}
+
+.scoreboard .high, .scoreboard .current {
+  display: inline;
+}

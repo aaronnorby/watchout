@@ -63,20 +63,27 @@ var quad = d3.geom.quadtree();
 // This is the function that does everything 
 ////////////////////////////////////////////
 function tickFn() {
+  currentScore = currentScore + 1 + Math.abs(player.xDeflect);
   if (currentScore > highScore) {
     highScore = currentScore;
   }
 
-  d3.selectAll(".high")
+  var d3High = d3.selectAll(".high")
     .select("span")
     .data([highScore])
     .text(function(d) {
       return d;
     });
 
+  if (highScore === currentScore) {
+    d3High.style({color: "red"});
+  } else {
+    d3High.style({color: "black"});
+  }
+
   d3.selectAll(".current")
     .select("span")
-    .data([++currentScore])
+    .data([currentScore])
     .text(function(d) {
       return d;
     });
